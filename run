@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e
+
+echo "[-----------]"
+echo "[----RUN----]"
+echo "[-----------]"
+
+find build/  -name "${1}"  -not -path '*dSYM/**' -prune -exec '{}' \;
