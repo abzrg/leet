@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -e
+
+printf "\n[----SCAN----]\n\n"
+
+scan-build make "${1}"
