@@ -48,7 +48,7 @@ static inline bool is_vowel(char c);
 static char * reverse_vowels(char * str);
 
 
-// ------<main>---------------------------------
+// ---<main>--------------------------------------
 
 
 int main(void)
@@ -67,7 +67,7 @@ int main(void)
 }
 
 
-// ------<end main>-----------------------------
+// ---<end main>----------------------------------
 
 
 static inline bool is_vowel(char c)

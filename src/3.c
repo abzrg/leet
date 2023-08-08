@@ -34,13 +34,18 @@ Constraints:
 #include <string.h>
 #include <assert.h>
 
+
 #define ARR_SIZE(ARR) (sizeof(ARR) / sizeof(ARR[0]))
+
 
 static inline uint64_t arrmax(uint64_t* arr, size_t len);
 static bool* kids_with_candies(
         uint64_t* candies,
         size_t candies_size,
         uint64_t extra_candies);
+
+
+// ---<main>--------------------------------------
 
 
 int main(void)
@@ -67,8 +72,7 @@ int main(void)
 
     result = kids_with_candies(candies, ARR_SIZE(candies), extra_candies);
 
-    for (size_t i = 0; i < ARR_SIZE(candies); i++)
-    {
+    for (size_t i = 0; i < ARR_SIZE(candies); i++) {
         printf("%d ", result[i]);
     }
     fputs("\n", stdout);
@@ -79,6 +83,8 @@ int main(void)
 }
 
 
+// ---<end main>----------------------------------
+
 
 /**
  * Note: The returned array must be malloced, assume caller calls free().
@@ -88,7 +94,7 @@ static bool* kids_with_candies(
         size_t   candies_size,
         uint64_t   extra_candies)
 {
-    // constraints
+    // Constraints
     assert(candies_size >= 2 && candies_size <= 100);
     for (size_t i = 0; i < candies_size; i++){
         uint64_t tmp = candies[i];
@@ -101,25 +107,25 @@ static bool* kids_with_candies(
     memset(lions, false, candies_size);
 
     size_t i = 0;
-    while (i < candies_size)
-    {
+    while (i < candies_size) {
         bool is_lion = true;
         uint64_t increased = candies[i] + extra_candies;
 
         size_t j = 0;
-        while (j < candies_size)
-        {
-            if (increased < m)
-            {
+        while (j < candies_size) {
+            if (increased < m) {
                 is_lion = false;
                 break;
             }
+
             j++;
         }
 
         lions[i] = is_lion;
+
         i++;
     }
+
     return lions;
 }
 
@@ -128,13 +134,13 @@ static inline uint64_t arrmax(uint64_t* arr, size_t len)
     uint64_t max = 0;
 
     size_t i = 0;
-    while (i < len)
-    {
-        if (arr[i] > max)
+    while (i < len) {
+        if (arr[i] > max) {
             max = arr[i];
+        }
+
         i++;
     }
 
     return max;
 }
-

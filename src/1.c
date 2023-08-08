@@ -1,5 +1,7 @@
 /* 1768. Merge Strings Alternately
 
+(EASY)
+
 You are given two strings `word1` and `word2`.
 Merge the strings by adding letters in
 alternating order, starting with `word1`. If a
@@ -19,7 +21,9 @@ Constraints:
 #include <stdlib.h>
 #include <assert.h>
 
+
 #define MAX_LEN 100UL
+
 
 char* mergeAlternately(const char* word1, const char* word2)
 {
@@ -31,32 +35,32 @@ char* mergeAlternately(const char* word1, const char* word2)
     assert(len1 < MAX_LEN || len2 < MAX_LEN);
 
     char* combined = malloc(sizeof(*combined) * (total_len + 1));
-    if (combined == NULL)
-    {
+    if (combined == NULL) {
         printf("Memory allocation failed.\n");
         exit(EXIT_FAILURE);
     }
 
     size_t i = 0, j = 0, k = 0;
-    while (i < len1 && j < len2)
-    {
+    while (i < len1 && j < len2) {
         combined[k++] = word1[i++];
         combined[k++] = word2[j++];
     }
 
-    while (i < len1)
-    {
+    while (i < len1) {
         combined[k++] = word1[i++];
     }
 
-    while (j < len2)
-    {
+    while (j < len2) {
         combined[k++] = word2[j++];
     }
 
     combined[k] = '\0'; // Null-terminate the merged string
     return combined;
 }
+
+
+// ---<main>-------------------------------------
+
 
 int main(void)
 {

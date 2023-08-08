@@ -30,27 +30,26 @@ Constraints:
 #include <stdbool.h>
 #include <stdarg.h>
 
-//-----------------------------------------------------------------------------
 
 #define ARR_SIZE(ARR) ((sizeof((ARR)) / sizeof((ARR)[0])))
 
-// #define TIME
+// To time the code define the TIME symbol
+//#define TIME
 
 #ifdef TIME
 #include "utils/timing/timing.h"
 #endif
+
 
 enum State {
     EMPTY,
     PLANTED
 };
 
-//-----------------------------------------------------------------------------
 
 void validate_constraints(int* fb, size_t fb_size, size_t n);
 bool can_place_flowers(int *fb, size_t fb_size, size_t n);
 
-//-----------------------------------------------------------------------------
 
 struct CodeblockData {
     int *fb;
@@ -68,8 +67,8 @@ void codeblock(void* data, ...)
     printf("ans = %d\n", can_place_flowers(fb, fb_size, n));
 }
 
-//-----------------------------------------------------------------------------
 
+// ---<main>--------------------------------------
 
 int main(void)
 {
@@ -94,7 +93,9 @@ int main(void)
     return 0;
 }
 
-//-----------------------------------------------------------------------------
+
+// ---<end main>----------------------------------
+
 
 /**
  * Note: returns -1 when initial state is not
@@ -103,47 +104,49 @@ int main(void)
  */
 void validate_constraints(int* fb, size_t fb_size, size_t n)
 {
-    if (fb_size < 1 && fb_size > 2*104)
+    if (fb_size < 1 && fb_size > 2*104) {
         fprintf(stderr, "Incorrect flowerbed length\n");
-    if (n > fb_size)
-        fprintf(stderr, "Incorrect number of flowers to plant\n");
+    }
 
-    for (size_t i = 0; i < fb_size; i++)
-    {
-        if (fb[i] != EMPTY && fb[i] != PLANTED)
-        {
-            fprintf(stderr,
-                    "Incorrect Initial State: Invalid plot at index: %zu\n",
-                    i);
+    if (n > fb_size) {
+        fprintf(stderr, "Incorrect number of flowers to plant\n");
+    }
+
+    for (size_t i = 0; i < fb_size; i++) {
+        if (fb[i] != EMPTY && fb[i] != PLANTED) {
+            fprintf(stderr, "Incorrect Initial State:"
+                    " Invalid plot at index: %zu\n", i);
         }
     }
 
     int wrong_index = -1;
-    for (size_t i = 0; i < fb_size; i++)
-    {
-        if (fb[i] == EMPTY)
+    for (size_t i = 0; i < fb_size; i++) {
+        if (fb[i] == EMPTY) {
             continue;
+        }
 
-        if (i == 0 && fb[i + 1] == PLANTED)
+        if (i == 0 && fb[i + 1] == PLANTED) {
             wrong_index = i;
-        else
+        } else {
             continue;
+        }
 
-        if (i == fb_size - 1 && fb[i - 1] == PLANTED)
+        if (i == fb_size - 1 && fb[i - 1] == PLANTED) {
             wrong_index = i;
-        else
+        } else {
             break;
+        }
 
-        if (fb[i - 1] == PLANTED || fb[i + 1] == PLANTED)
+        if (fb[i - 1] == PLANTED || fb[i + 1] == PLANTED) {
             wrong_index = i;
+        }
     }
 
 
-    if (wrong_index != -1)
-    {
+    if (wrong_index != -1) {
         fprintf(stderr,
-                "Incorrect Initial State: Wrongly planted plot at index: %d\n",
-                wrong_index);
+                "Incorrect Initial State:"
+                " Wrongly planted plot at index: %d\n", wrong_index);
     }
 }
 
@@ -155,12 +158,10 @@ void validate_constraints(int* fb, size_t fb_size, size_t n)
  */
 bool can_place_flowers(int *fb, size_t fb_size, size_t n)
 {
-    for (size_t i = 0; i < fb_size; i++)
-    {
-        if (fb[i] == EMPTY &&
-                (i == 0 || fb[i - 1] == EMPTY) &&
-                (i == fb_size - 1 || fb[i + 1] == EMPTY))
-        {
+    for (size_t i = 0; i < fb_size; i++) {
+        if (fb[i] == EMPTY
+            && (i == 0 || fb[i - 1] == EMPTY)
+            && (i == fb_size - 1 || fb[i + 1] == EMPTY)) {
             fb[i] = PLANTED;
             n--;
         }
