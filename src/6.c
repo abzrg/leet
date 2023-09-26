@@ -12,26 +12,28 @@ char* reverse_words(char* restrict s)
 {
     // strtok() modifies the string it operates on, replacing delimiter
     // characters with `NULL`s.
-    char* copy = malloc(sizeof(*copy) * strlen(s));
+    char* copy = malloc(sizeof(*copy) * strlen(s) + 1);
     copy = strcpy(copy, s);
 
     // Getting the count of tokens
     size_t token_count = 0;
-    char* token = strtok(s, DELIMITER);
+    char* token = strtok(copy, DELIMITER);
     while (token != NULL) {
         token_count++;
         token = strtok(NULL, DELIMITER);
     }
 
+    free(copy);
+
     char** tokens = malloc(sizeof(*tokens) * token_count);
-    token = strtok(copy, DELIMITER);
+    token = strtok(s, DELIMITER);
     for (size_t i = 0; token != NULL; i++) {
         size_t token_len = strlen(token);
         assert(token_len != 0 && "Token of size zero!");
 
         char* tmp = malloc(sizeof(*tmp) * token_len + 1);
         assert(tmp && "You are so poor!");
-        strncpy(tmp, token, token_len);
+        strncpy(tmp, token, token_len + 1);
         tokens[i]
             = tmp; // ? Use of memory allocated with size zero [unix.Malloc]
 
@@ -40,20 +42,24 @@ char* reverse_words(char* restrict s)
     }
 
     // Assmble tokens in reverse order into a string
-    char* reversed = malloc(sizeof(*reversed) * strlen(s) + 1);
     // i : looping over tokens
     // j : the position in which tokens or a space should be placed
     for (int i = (int)token_count - 1, j = 0; i > -1; i--) {
         size_t token_len
             = strlen(tokens[i]); // ? 1st function call argument is an
                                  // uninitialized value [core.CallAndMessage]
-        strncpy(reversed + j, tokens[i], token_len);
+        strncpy(s + j, tokens[i], token_len);
 
         // Free token
         free(tokens[i]);
 
-        // Add one space in between tokens;
-        reversed[j + token_len] = ' ';
+        // Add one space in between tokens
+        // If last token has been inserted then add a null terminator at the end
+        if (i == 0) {
+            s[j + token_len] = '\0';
+        } else {
+            s[j + token_len] = ' ';
+        }
 
         // Thus far we added a token and a space
         j += (int)token_len + 1;
@@ -63,7 +69,7 @@ char* reverse_words(char* restrict s)
     free(tokens);
 
     // Remember to free reversed in the caller
-    return reversed;
+    return s;
 }
 
 int main(void)
@@ -73,7 +79,7 @@ int main(void)
     char* reversed = reverse_words(s);
     printf("%s\n", reversed);
 
-    free(reversed);
+    // free(reversed);
 
     return 0;
 }
