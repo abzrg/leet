@@ -3,7 +3,7 @@ CC := clang
 CFLAGS := -Wall -Wextra -std=c17 -pedantic -g -Wno-unused-function
 ASANFLAGS :=
 LDFLAGS := -lm
-CPPFLAGS := -I./
+CPPFLAGS := -I./utils/include/
 
 
 # Check if the OS is Windows
