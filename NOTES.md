@@ -1,4 +1,3 @@
-
 # BUILD TOOLS
 
 ## scan-build
@@ -91,3 +90,45 @@ When UBSan detects undefined behavior, it reports the problem, including the loc
 - **Purpose:** MemorySanitizer is designed to detect and report the use of uninitialized memory in your C/C++ programs.
 - **How it Works:** MSan instruments the code to track the flow of values in memory and detects when uninitialized memory is used. It does this by associating a "shadow" memory region with each byte of your program's addressable memory, and it checks for discrepancies between the program's regular memory and the shadow memory.
 - **Common Use Case:** Identifying and fixing bugs where your program reads uninitialized memory, which can lead to unpredictable and potentially incorrect behavior.
+
+
+
+---
+
+
+# Strings
+
+## `strtok(token, delimiter)`
+
+
+`strtok` modifies the string it operates on, replacing delimiter characters with `NULL`s.
+
+
+```c
+token = strtok(str, " ");
+
+while (token != NULL) {
+    // do some stuff with token
+    token = strtok(NULL, " ")
+}
+
+// ~~~ strtok_r
+
+// - One can use multiple delimiter (":,")
+// - ,, or :: will not produce an empty token
+// - overwrites input string (*str) and input pointer (str)
+while ((token = strtok_r(str, ":,", &str))) {
+    // do your stuff
+}
+
+// ~~~ strsep
+
+// - One can use multiple delimiter (":,")
+// - ,, or :: will produce an empty token
+// - overwrites input string (*str) and input pointer (str)
+while ((token = strsep(&str, ":,"))) {
+    // do your stuff
+}
+```
+
+Read more: https://stackoverflow.com/a/7219504/13041067
