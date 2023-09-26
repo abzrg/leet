@@ -1,6 +1,7 @@
 RM := rm
 CC := clang
 CFLAGS := -Wall -Wextra -std=c17 -pedantic -g -Wno-unused-function
+ASANFLAGS :=
 LDFLAGS := -lm
 CPPFLAGS := -I./
 
@@ -41,10 +42,10 @@ $(BUILDDIR):
 	mkdir $@
 
 $(BUILDDIR)/%: $(SRCDIR)/%.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ $<
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(ASANFLAGS) -o $@ $<
 
 %: $(SRCDIR)/%.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) -o $(BUILDDIR)/$@ $<
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(ASANFLAGS) -o $(BUILDDIR)/$@ $<
 
 clean:
 	$(RM) -rf $(BUILDDIR)/*
