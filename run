@@ -2,4 +2,4 @@
 
 set -e
 
-find build/  -name "${1}"  -not -path '*dSYM/**' -prune -exec '{}' \;
+MallocNanoZone=0 find build/  -name "${1}"  -not -path '*dSYM/**' -prune -exec '{}' \;
