@@ -23,99 +23,71 @@ Constraints:
 
 */
 
+#include <assert.h>
+#include <stdarg.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 #include <string.h>
-#include <stdbool.h>
-#include <stdarg.h>
-
 
 #define ARR_SIZE(ARR) ((sizeof((ARR)) / sizeof((ARR)[0])))
 
-// To time the code define the TIME symbol
-//#define TIME
-
-#ifdef TIME
-#include "utils/timing/timing.h"
+#ifndef NOCHRONO
+#include "utils/chrono.h"
 #endif
 
+enum State { EMPTY, PLANTED };
 
-enum State {
-    EMPTY,
-    PLANTED
-};
-
-
-void validate_constraints(int* fb, size_t fb_size, size_t n);
-bool can_place_flowers(int *fb, size_t fb_size, size_t n);
-
-
-struct CodeblockData {
-    int *fb;
-    size_t fb_size;
-    size_t n;
-};
-
-void codeblock(void* data, ...)
-{
-    struct CodeblockData* cb_data = (struct CodeblockData*)data;
-    int *fb = cb_data->fb;
-    size_t fb_size = cb_data->fb_size;
-    size_t n = cb_data->n;
-
-    printf("ans = %d\n", can_place_flowers(fb, fb_size, n));
-}
-
-
-// ---<main>--------------------------------------
+void validate_constraints(const int* fb, size_t fb_size, size_t n);
+bool can_place_flowers(int* fb, size_t fb_size, size_t n);
 
 int main(void)
 {
-#if 1
+#if 1 // Case 1
     int fb[] = { PLANTED, EMPTY, EMPTY, EMPTY, PLANTED };
     size_t n = 1;
-#else
+#else // Case 2
     int fb[] = { PLANTED, EMPTY, EMPTY, EMPTY, PLANTED };
     size_t n = 2;
 #endif
+
     size_t fb_size = ARR_SIZE(fb);
-    // validate the flowerbed against the constraints
+
+    // Validate the flowerbed against the constraints
     validate_constraints(fb, fb_size, n);
 
-#ifdef TIME
-    double time = measureExecutionTime(codeblock, fb, fb_size, n);
-    printf("\nElapsed Time: %e seconds\n", time);
-#else
-    printf("ans = %d\n", can_place_flowers(fb, fb_size, n));
-#endif
+    bool can_place = false;
+
+    chrono
+    {
+        can_place = can_place_flowers(fb, fb_size, n);
+    }
+
+    printf("ans = %d\n", can_place);
 
     return 0;
 }
 
-
-// ---<end main>----------------------------------
-
-
 /**
- * Note: returns -1 when initial state is not
- * valid, otherwise non-negative index of wrong
- * plot
+ * Returns -1 when initial state is not valid, otherwise non-negative index of
+ * wrong plot
  */
-void validate_constraints(int* fb, size_t fb_size, size_t n)
+void validate_constraints(const int* fb, size_t fb_size, size_t n)
 {
-    if (fb_size < 1 && fb_size > 2*104) {
-        fprintf(stderr, "Incorrect flowerbed length\n");
+    if (fb_size < 1 || fb_size > 2 * 104) {
+        fprintf(stderr, "Incorrect flowerbed length\n"); // NOLINT
     }
 
     if (n > fb_size) {
-        fprintf(stderr, "Incorrect number of flowers to plant\n");
+        fprintf(stderr, "Incorrect number of flowers to plant\n"); // NOLINT
     }
 
     for (size_t i = 0; i < fb_size; i++) {
         if (fb[i] != EMPTY && fb[i] != PLANTED) {
-            fprintf(stderr, "Incorrect Initial State:"
-                    " Invalid plot at index: %zu\n", i);
+            fprintf(stderr, // NOLINT
+                    "Incorrect Initial State:"
+                    " Invalid plot at index: %zu\n",
+                    i);
         }
     }
 
@@ -126,41 +98,40 @@ void validate_constraints(int* fb, size_t fb_size, size_t n)
         }
 
         if (i == 0 && fb[i + 1] == PLANTED) {
-            wrong_index = i;
+            wrong_index = (int)i;
         } else {
             continue;
         }
 
         if (i == fb_size - 1 && fb[i - 1] == PLANTED) {
-            wrong_index = i;
+            wrong_index = (int)i;
         } else {
             break;
         }
 
         if (fb[i - 1] == PLANTED || fb[i + 1] == PLANTED) {
-            wrong_index = i;
+            wrong_index = (int)i;
         }
     }
 
 
     if (wrong_index != -1) {
-        fprintf(stderr,
+        fprintf(stderr, // NOLINT
                 "Incorrect Initial State:"
-                " Wrongly planted plot at index: %d\n", wrong_index);
+                " Wrongly planted plot at index: %d\n",
+                wrong_index);
     }
 }
 
-
 /**
  * @param:
- *  -  fb:  flowerbed
- *  -  n:   count of flowers to plant
+ *  - fb:  flowerbed
+ *  - n:   count of flowers to plant
  */
-bool can_place_flowers(int *fb, size_t fb_size, size_t n)
+bool can_place_flowers(int* fb, size_t fb_size, size_t n) // NOLINT
 {
     for (size_t i = 0; i < fb_size; i++) {
-        if (fb[i] == EMPTY
-            && (i == 0 || fb[i - 1] == EMPTY)
+        if (fb[i] == EMPTY && (i == 0 || fb[i - 1] == EMPTY)
             && (i == fb_size - 1 || fb[i + 1] == EMPTY)) {
             fb[i] = PLANTED;
             n--;
